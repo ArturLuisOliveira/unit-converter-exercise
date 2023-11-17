@@ -27,11 +27,9 @@ export const converterSlice = createSlice({
   initialState,
   reducers: {
     addFact: (state, action: PayloadAction<Fact>) => {
-      // TODO: implement
       return { ...state, facts: [...state.facts, action.payload] };
     },
     convertUnit: (state, action: PayloadAction<Query>) => {
-      // TODO: implement
       const { from, to, value } = action.payload;
 
       //in-order case
@@ -50,6 +48,7 @@ export const converterSlice = createSlice({
 
       //units with intermediate
       //todo: improve this, currently it only accepts only one intermediate
+      //using a breadth first search to find the shortest path and then calculating would be better
       const fromFacts = state.facts.filter((f) => f.from === from);
       const toFacts = state.facts.filter((f) => f.to === to);
       const intermediate = fromFacts.find((f) =>
