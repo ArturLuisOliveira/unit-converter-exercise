@@ -50,4 +50,12 @@ describe('converter reducer', () => {
     const actual = converterReducer(twoFacts, convertUnit({ from: 'm', to: 'mm', value: 2 }));
     expect(actual.queryAnswer).toEqual(2000);
   });
+
+  it.only('should handle converting units with multiple intermediates', () => {
+    const oneFact = converterReducer(initialState, addFact({ from: 'km', to: 'm', ratio: 1000 }));
+    const twoFacts = converterReducer(oneFact, addFact({ from: 'm', to: 'cm', ratio: 100 }));
+    const treeFacts = converterReducer(twoFacts, addFact({ from: 'cm', to: 'mm', ratio: 10 }));
+    const actual = converterReducer(treeFacts, convertUnit({ from: 'km', to: 'mm', value: 1 }));
+    expect(actual.queryAnswer).toEqual(1e+6);
+  });
 });

@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Graph, pathTo } from "./helpers/Graph";
 
 export type Fact = {
   from: string;
@@ -32,39 +33,27 @@ export const converterSlice = createSlice({
     convertUnit: (state, action: PayloadAction<Query>) => {
       const { from, to, value } = action.payload;
 
-      //in-order case
-      const fact = state.facts.find((f) => f.from === from && f.to === to);
-      const queryAnswer = fact ? value * fact.ratio : undefined;
-      if (fact) return { ...state, queryAnswer };
+      const graph = new Graph<string, { ratio: number; operand: "/" | "*" }>();
+      state.facts.forEach(({ from, to, ratio }) => {
+        graph.addVertex({ value: from });
+        graph.addVertex({ value: to });
+        graph.addEdge({ from, to, data: { ratio, operand: "*" } });
+        graph.addEdge({ from: to, to: from, data: { ratio, operand: "/" } });
+      });
 
-      //inverse case
-      const inverseFact = state.facts.find(
-        (f) => f.from === to && f.to === from
-      );
-      const inverseQueryAnswer = inverseFact
-        ? value / inverseFact.ratio
-        : undefined;
-      if (inverseFact) return { ...state, queryAnswer: inverseQueryAnswer };
+      const path = pathTo({ from, to, graph });
 
-      //units with intermediate
-      //todo: improve this, currently it only accepts only one intermediate
-      //using a breadth first search to find the shortest path and then calculating would be better
-      const fromFacts = state.facts.filter((f) => f.from === from);
-      const toFacts = state.facts.filter((f) => f.to === to);
-      const intermediate = fromFacts.find((f) =>
-        toFacts.some((t) => t.from === f.to)
-      );
-      if (!intermediate) return { ...state, queryAnswer: undefined };
-      const intermediateFact = state.facts.find(
-        (f) => f.from === intermediate.to && f.to === to
-      );
-      const intermediateQueryAnswer = intermediateFact
-        ? value * intermediate.ratio * intermediateFact.ratio
-        : undefined;
-      if (intermediateFact)
-        return { ...state, queryAnswer: intermediateQueryAnswer };
+      if (path == null || path?.length < 1) return state;
 
-      return state;
+      let queryAnswer = value;
+      for (let i = 0; i < path?.length - 1; i++) {
+        const neighbors = graph.adjacencyList.get(path[i]);
+        const next = neighbors?.get(path[i + 1]);
+        if (next == null) return state;
+        if (next.operand == "*") queryAnswer = queryAnswer * next.ratio;
+        if (next.operand == "/") queryAnswer = queryAnswer / next.ratio;
+      }
+      return { ...state, queryAnswer };
     },
   },
 });
