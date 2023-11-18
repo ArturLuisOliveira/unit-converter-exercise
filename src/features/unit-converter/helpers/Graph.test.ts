@@ -79,7 +79,7 @@ describe("Graph", () => {
       expect(predecessors.get("mm")).toBe("cm");
     });
 
-    test.only("should return the path to the vertex", () => {
+    test("should return the path to the vertex", () => {
       const path = pathTo({ from: "km", to: "mm", graph });
       expect(path).toEqual(["km", "m", "cm", "mm"]);
     });
