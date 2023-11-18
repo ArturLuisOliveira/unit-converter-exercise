@@ -104,6 +104,8 @@ export const pathTo = <VertexValue, EdgeData>({
     current = predecessors.get(current);
     if (current != null) path.unshift(current);
   }
+  if (path.length < 1) return undefined;
+
   path.push(to);
 
   return path;

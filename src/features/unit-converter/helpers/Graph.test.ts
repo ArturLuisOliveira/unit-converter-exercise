@@ -57,7 +57,6 @@ describe("Graph", () => {
       const { distances } = breadthFirstSearch({
         graph,
         startVertexValue: "km",
-        callback: (vertex) => {},
       });
 
       expect(distances.get("km")).toBe(0);
@@ -70,7 +69,6 @@ describe("Graph", () => {
       const { predecessors } = breadthFirstSearch({
         graph,
         startVertexValue: "km",
-        callback: (vertex) => {},
       });
 
       expect(predecessors.get("km")).toBe(null);
@@ -83,6 +81,14 @@ describe("Graph", () => {
       const path = pathTo({ from: "km", to: "mm", graph });
       expect(path).toEqual(["km", "m", "cm", "mm"]);
     });
+
+    test.each([{ from: "mile", to: "foot", graph }])(
+      "should return undefined if there is no path",
+      (params) => {
+        const path = pathTo(params);
+        expect(path).toBeUndefined();
+      }
+    );
 
     afterEach(() => {
       graph.clear();
