@@ -1,4 +1,4 @@
-import { Graph, breadthFirstSearch } from "./Graph";
+import { Graph, breadthFirstSearch, pathTo } from "./Graph";
 
 describe("Graph", () => {
   describe("given a graph", () => {
@@ -77,6 +77,11 @@ describe("Graph", () => {
       expect(predecessors.get("m")).toBe("km");
       expect(predecessors.get("cm")).toBe("m");
       expect(predecessors.get("mm")).toBe("cm");
+    });
+
+    test.only("should return the path to the vertex", () => {
+      const path = pathTo({ from: "km", to: "mm", graph });
+      expect(path).toEqual(["km", "m", "cm", "mm"]);
     });
 
     afterEach(() => {

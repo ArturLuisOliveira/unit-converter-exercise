@@ -49,7 +49,7 @@ export const breadthFirstSearch = <VertexValue, EdgeData>({
 }: {
   graph: Graph<VertexValue, EdgeData>;
   startVertexValue: VertexValue;
-  callback: (vertex: VertexValue) => void;
+  callback?: (vertex: VertexValue) => void;
 }) => {
   const vertices = graph.vertices;
   const adjList = graph.adjacencyList;
@@ -76,11 +76,35 @@ export const breadthFirstSearch = <VertexValue, EdgeData>({
       }
     }
     colors.set(current!, "black");
-    callback(current!);
+    if (callback != null) callback(current!);
   }
 
   return {
     distances,
     predecessors,
   };
+};
+
+export const pathTo = <VertexValue, EdgeData>({
+  from,
+  to,
+  graph,
+}: {
+  from: VertexValue;
+  to: VertexValue;
+  graph: Graph<VertexValue, EdgeData>;
+}) => {
+  const { predecessors } = breadthFirstSearch({
+    graph,
+    startVertexValue: from,
+  });
+  const path: VertexValue[] = [];
+  let current: VertexValue | undefined | null = to;
+  while (current != null) {
+    current = predecessors.get(current);
+    if (current != null) path.unshift(current);
+  }
+  path.push(to);
+
+  return path;
 };
