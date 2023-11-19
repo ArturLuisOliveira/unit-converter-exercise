@@ -1,4 +1,4 @@
-import { useFacts } from "../../hooks";
+import { useFacts } from "../hooks";
 
 export const FactsList = () => {
   const facts = useFacts();

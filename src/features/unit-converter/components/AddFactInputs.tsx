@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import { addFact } from "../../converterSlice";
+import { addFact } from "../converterSlice";
 import { useDispatch } from "react-redux";
 
 export const AddFactsInputs = () => {

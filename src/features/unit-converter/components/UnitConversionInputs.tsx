@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { UnitConverterState, convertUnit } from "../../converterSlice";
-import { useFacts } from "../../hooks";
+import { UnitConverterState, convertUnit } from "../converterSlice";
+import { useFacts } from "../hooks";
 
 export const UnitConversionInputs = () => {
   const queryAnswer = useSelector<
