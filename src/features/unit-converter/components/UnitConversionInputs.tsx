@@ -9,8 +9,16 @@ export const UnitConversionInputs = () => {
     number | undefined
   >((state) => state.converter.queryAnswer);
   const facts = useFacts();
-  const froms = useMemo(() => ["", ...facts.map((fact) => fact.from)], [facts]);
-  const tos = useMemo(() => ["", ...facts.map((fact) => fact.to)], [facts]);
+  const units = useMemo(
+    () =>
+      [
+        "",
+        ...new Set(
+          facts.reduce((acc, cur) => [...acc, cur.from, cur.to], [] as string[])
+        ),
+      ].sort((a, b) => a.localeCompare(b)),
+    [facts]
+  );
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [value, setValue] = useState("");
@@ -33,16 +41,16 @@ export const UnitConversionInputs = () => {
       <label>
         from:
         <select value={from} onChange={(e) => setFrom(e.target.value)}>
-          {froms.map((from) => (
-            <option value={from}>{from}</option>
+          {units.map((unit) => (
+            <option value={unit}>{unit}</option>
           ))}
         </select>
       </label>
       <label>
         to:
         <select value={to} onChange={(e) => setTo(e.target.value)}>
-          {tos.map((to) => (
-            <option value={to}>{to}</option>
+          {units.map((unit) => (
+            <option value={unit}>{unit}</option>
           ))}
         </select>
       </label>
