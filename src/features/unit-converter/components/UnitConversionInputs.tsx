@@ -1,13 +1,11 @@
 import { useCallback, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { UnitConverterState, convertUnit } from "../converterSlice";
-import { useFacts } from "../hooks";
+import { useDispatch } from "react-redux";
+
+import { convertUnit } from "../converterSlice";
+import { useFacts, useQueryAnswer } from "../hooks";
 
 export const UnitConversionInputs = () => {
-  const queryAnswer = useSelector<
-    { converter: UnitConverterState },
-    number | undefined
-  >((state) => state.converter.queryAnswer);
+  const queryAnswer = useQueryAnswer();
   const facts = useFacts();
   const units = useMemo(
     () =>
@@ -23,13 +21,11 @@ export const UnitConversionInputs = () => {
   const [to, setTo] = useState("");
   const [value, setValue] = useState("");
   const dispatch = useDispatch();
-
   const disabled = useMemo(() => {
     if (!from || !to || !value) return true;
     if (Number.isNaN(Number(value))) return true;
     return false;
   }, [from, to, value]);
-
   const onClick = useCallback(() => {
     dispatch(convertUnit({ from, to, value: Number(value) }));
   }, [from, to, value, convertUnit, setFrom, setTo, setValue]);
