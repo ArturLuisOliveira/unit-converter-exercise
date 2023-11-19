@@ -1,11 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
-import { Fact, UnitConverterState, addFact } from "../../converterSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useCallback, useMemo, useState } from "react";
+import { addFact } from "../../converterSlice";
+import { useDispatch } from "react-redux";
 
-/**
- * @todo add input validation
- * @todo improve styling
- */
 export const AddFactsInputs = () => {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
@@ -13,14 +9,17 @@ export const AddFactsInputs = () => {
   const dispatch = useDispatch();
   const onClick = useCallback(() => {
     dispatch(addFact({ from, to, ratio: Number(ratio) }));
-  }, [addFact, from, to, ratio]);
+    setFrom("");
+    setTo("");
+    setRatio("");
+  }, [addFact, from, to, ratio, setFrom, setTo, setRatio]);
 
-  const facts = useSelector<{ converter: UnitConverterState }, Fact[]>(
-    (state) => state.converter.facts
-  );
-  useEffect(() => {
-    console.log({ facts });
-  }, [facts]);
+  const disabled = useMemo(() => {
+    if (!from || !to || !ratio) return true;
+    if (Number.isNaN(Number(ratio))) return true;
+    return false;
+  }, [from, to, ratio]);
+
   return (
     <>
       <h4>Add Fact</h4>
@@ -37,7 +36,9 @@ export const AddFactsInputs = () => {
         <input value={ratio} onChange={(e) => setRatio(e.target.value)} />
       </label>
 
-      <button onClick={onClick}>Add Fact</button>
+      <button onClick={onClick} disabled={disabled}>
+        Add Fact
+      </button>
     </>
   );
 };

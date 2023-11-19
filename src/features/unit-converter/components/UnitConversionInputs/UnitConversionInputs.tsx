@@ -1,11 +1,7 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { UnitConverterState, convertUnit } from "../../converterSlice";
 
-/**
- * @todo add input validation
- * @todo improve styling
- */
 export const UnitConversionInputs = () => {
   const queryAnswer = useSelector<
     { converter: UnitConverterState },
@@ -15,9 +11,19 @@ export const UnitConversionInputs = () => {
   const [to, setTo] = useState("");
   const [value, setValue] = useState("");
   const dispatch = useDispatch();
+
+  const disabled = useMemo(() => {
+    if (!from || !to || !value) return true;
+    if (Number.isNaN(Number(value))) return true;
+    return false;
+  }, [from, to, value]);
+
   const onClick = useCallback(() => {
     dispatch(convertUnit({ from, to, value: Number(value) }));
-  }, [from, to, value, convertUnit]);
+    setFrom("");
+    setTo("");
+    setValue("");
+  }, [from, to, value, convertUnit, setFrom, setTo, setValue]);
 
   return (
     <>
@@ -36,7 +42,9 @@ export const UnitConversionInputs = () => {
         <input value={value} onChange={(e) => setValue(e.target.value)} />
       </label>
 
-      <button onClick={onClick}>Convert</button>
+      <button disabled={disabled} onClick={onClick}>
+        Convert
+      </button>
       <h6>{queryAnswer}</h6>
     </>
   );
