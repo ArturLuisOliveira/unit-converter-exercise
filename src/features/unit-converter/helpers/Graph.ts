@@ -56,7 +56,7 @@ export const breadthFirstSearch = <VertexValue, EdgeData>({
   const distances = new Map<VertexValue, number>();
   const predecessors = new Map<VertexValue, VertexValue | null>();
   const colors = new Map<VertexValue, Color>();
-  for (const vertex of vertices) {
+  for (const vertex of [...vertices]) {
     colors.set(vertex.value, "white");
     distances.set(vertex.value, 0);
     predecessors.set(vertex.value, null);
@@ -67,7 +67,7 @@ export const breadthFirstSearch = <VertexValue, EdgeData>({
     const neighbors = adjList.get(current as VertexValue);
     colors.set(current!, "grey");
 
-    for (const [neighbor] of neighbors!) {
+    for (const [neighbor] of [...neighbors!]) {
       if (colors.get(neighbor) === "white") {
         queue.unshift(neighbor);
         distances.set(neighbor, distances.get(current!)! + 1);

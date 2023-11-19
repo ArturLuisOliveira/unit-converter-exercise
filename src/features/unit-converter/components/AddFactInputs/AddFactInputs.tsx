@@ -1,24 +1,13 @@
-import { useCallback, useMemo, useState } from "react";
-import { addFact } from "../converterSlice";
-import { useDispatch } from "react-redux";
+import { useState } from "react";
+
+import { useDisabled, useOnClick } from "./hooks";
 
 export const AddFactsInputs = () => {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [ratio, setRatio] = useState("");
-  const dispatch = useDispatch();
-  const onClick = useCallback(() => {
-    dispatch(addFact({ from, to, ratio: Number(ratio) }));
-    setFrom("");
-    setTo("");
-    setRatio("");
-  }, [addFact, from, to, ratio, setFrom, setTo, setRatio]);
-
-  const disabled = useMemo(() => {
-    if (!from || !to || !ratio) return true;
-    if (Number.isNaN(Number(ratio))) return true;
-    return false;
-  }, [from, to, ratio]);
+  const onClick = useOnClick({ from, to, ratio, setFrom, setRatio, setTo });
+  const disabled = useDisabled({ from, ratio, to });
 
   return (
     <>

@@ -51,7 +51,7 @@ describe('converter reducer', () => {
     expect(actual.queryAnswer).toEqual(2000);
   });
 
-  it.only('should handle converting units with multiple intermediates', () => {
+  it('should handle converting units with multiple intermediates', () => {
     const oneFact = converterReducer(initialState, addFact({ from: 'km', to: 'm', ratio: 1000 }));
     const twoFacts = converterReducer(oneFact, addFact({ from: 'm', to: 'cm', ratio: 100 }));
     const treeFacts = converterReducer(twoFacts, addFact({ from: 'cm', to: 'mm', ratio: 10 }));

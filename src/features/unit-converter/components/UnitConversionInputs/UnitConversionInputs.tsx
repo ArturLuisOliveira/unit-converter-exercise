@@ -1,34 +1,16 @@
-import { useCallback, useMemo, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useState } from "react";
 
-import { convertUnit } from "../converterSlice";
-import { useFacts, useQueryAnswer } from "../hooks";
+import { useQueryAnswer } from "../../hooks";
+import { useDisabled, useOnClick, useUnits } from "./hooks";
 
 export const UnitConversionInputs = () => {
-  const queryAnswer = useQueryAnswer();
-  const facts = useFacts();
-  const units = useMemo(
-    () =>
-      [
-        "",
-        ...new Set(
-          facts.reduce((acc, cur) => [...acc, cur.from, cur.to], [] as string[])
-        ),
-      ].sort((a, b) => a.localeCompare(b)),
-    [facts]
-  );
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [value, setValue] = useState("");
-  const dispatch = useDispatch();
-  const disabled = useMemo(() => {
-    if (!from || !to || !value) return true;
-    if (Number.isNaN(Number(value))) return true;
-    return false;
-  }, [from, to, value]);
-  const onClick = useCallback(() => {
-    dispatch(convertUnit({ from, to, value: Number(value) }));
-  }, [from, to, value, convertUnit, setFrom, setTo, setValue]);
+  const units = useUnits();
+  const queryAnswer = useQueryAnswer();
+  const disabled = useDisabled({ from, to, value });
+  const onClick = useOnClick({ from, setFrom, setTo, setValue, to, value });
 
   return (
     <>
