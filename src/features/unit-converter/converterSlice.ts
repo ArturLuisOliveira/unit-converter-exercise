@@ -32,6 +32,7 @@ export const converterSlice = createSlice({
     },
     convertUnit: (state, action: PayloadAction<Query>) => {
       const { from, to, value } = action.payload;
+      if(from === to) return { ...state, queryAnswer: value };
 
       const graph = new Graph<string, { ratio: number; operand: "/" | "*" }>();
       state.facts.forEach(({ from, to, ratio }) => {

@@ -25,6 +25,11 @@ describe('converter reducer', () => {
     expect(twoFacts.facts).toContain(secondFact);
   });
 
+  it('should convert to same unit', () => {
+    const actual = converterReducer(initialState, convertUnit({ from: 'm', to: 'm', value: 1 }));
+    expect(actual.queryAnswer).toEqual(1);
+  })
+
   it('should handle converting units direct', () => {
     const oneFact = converterReducer(initialState, addFact({ from: 'm', to: 'cm', ratio: 100 }));
     const actual = converterReducer(oneFact, convertUnit({ from: 'm', to: 'cm', value: 2 }));
