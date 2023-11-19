@@ -1,10 +1,10 @@
-import { useSelector } from "react-redux";
-import { Fact, UnitConverterState } from "../../converterSlice";
+import { useFacts } from "../../hooks";
 
 export const FactsList = () => {
-  const facts = useSelector<{ converter: UnitConverterState }, Fact[]>(
-    (state) => state.converter.facts
-  );
+  const facts = useFacts();
+
+  if (facts.length < 1) return <h6>Add facts to see the list of facts</h6>;
+
   return (
     <>
       <h4>Facts</h4>
